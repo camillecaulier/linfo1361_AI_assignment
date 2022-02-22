@@ -12,11 +12,21 @@ from search import *
 #################
 class Rubik2D(Problem):
     def is_identical_line(self,line):
+        print(line)
         first_element = line[0]
         for element in line:
             if first_element != element:
                 return False
         return True
+
+    def get_column(self,grid,i):
+        column = [item[i] for item in grid] #this doesn't work if it's a tuple
+        return column
+
+    def move_column(self, grid,i,n_move):
+        pass
+    def move_row(self, grid, i, n_move):
+        pass
 
     def actions(self, state):
         """return a set of actions"""
@@ -31,25 +41,42 @@ class Rubik2D(Problem):
         #0 means horizontal
         #1 means vertical
         #the second number will be by how much we move in a certain direction
-        for line in state.grid:
-            if not Rubik2D.is_identical_line(line): #if line is not identical we do nothing
+        for line_number in range(len(state.grid)):
+            line = state.grid[line_number]
+            # print("hi")
+            if not self.is_identical_line(line): #if line is not identical we do nothing
                 for n_move in range(1,n_cols): #number of movements start from 1 to n_cols
                     newline = line[slice(n_cols - n_move)] + line[slice(0,n_cols-n_move)]
                     if(newline != line): #if not identical add list to move
-                        action_list.append((0,n_move))
+                        action_list.append((0,line_number,n_move))
 
         #we will now work with vertical movements which is tricky
 
+        for i in range(n_cols):
+            # print("hey")
+            line = self.get_column(state.grid,i) #get the column
+            if not self.is_identical_line(line):
+                for n_move in range(1,n_rows):
+                    newline = line[slice(n_cols - n_move)] + line[slice(0,n_cols-n_move)]
+                    if (newline != line):  # if not identical add list to move
+                        action_list.append((1,i, n_move))
 
         return action_list
 
     def result(self, state, action):
         """return the new grid"""
+        #action is (0 or 1, n_move)
+        (axe,axe_number,n_move) = action
+        print(axe,axe_number, n_move)
+        # if axe == 0:#move row
 
         pass
 
     def goal_test(self, state):
-        pass
+        for i in range(len(state.grid)):
+            if state.grid[i] != state.answer[i]:
+                return False
+        return True
 
 
 ###############
