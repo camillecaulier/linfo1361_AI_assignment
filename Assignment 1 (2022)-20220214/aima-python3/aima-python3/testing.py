@@ -11,41 +11,14 @@ from search import *
 # Problem class #
 #################
 class Rubik2D(Problem):
-    def is_identical_line(self,line):
-        first_element = line[0]
-        for element in line:
-            if first_element != element:
-                return False
-        return True
 
     def actions(self, state):
         """return a set of actions"""
         #look at all the horizontal line changes
-        #LINES
-        #check if line is identical
-
-        n_cols = len(state.grid[0])
-        n_rows = len(state.grid)
-        action_list = []
-        #the actions list will have a list of tuples of movements the first number will be the direction
-        #0 means horizontal
-        #1 means vertical
-        #the second number will be by how much we move in a certain direction
-        for line in state.grid:
-            if not Rubik2D.is_identical_line(line): #if line is not identical we do nothing
-                for n_move in range(1,n_cols): #number of movements start from 1 to n_cols
-                    newline = line[slice(n_cols - n_move)] + line[slice(0,n_cols-n_move)]
-                    if(newline != line): #if not identical add list to move
-                        action_list.append((0,n_move))
-
-        #we will now work with vertical movements which is tricky
-
-
-        return action_list
+        pass
 
     def result(self, state, action):
         """return the new grid"""
-
         pass
 
     def goal_test(self, state):
@@ -96,20 +69,22 @@ if __name__ == "__main__":
 
     init_state = State(shape, tuple(initial_grid), tuple(goal_grid), "Init")
     problem = Rubik2D(init_state)
-
-    # Example of search
-    start_timer = time.perf_counter()
-    node, nb_explored, remaining_nodes = breadth_first_tree_search(problem)
-    end_timer = time.perf_counter()
-
-    # Example of print
-    path = node.path()
-
-    for n in path:
-        # assuming that the __str__ function of state outputs the correct format
-        print(n.state)
-
-    print("* Execution time:\t", str(end_timer - start_timer))
-    print("* Path cost to goal:\t", node.depth, "moves")
-    print("* #Nodes explored:\t", nb_explored)
-    print("* Queue size at goal:\t",  remaining_nodes)
+    print(init_state.grid)
+    for i in range(1,5):
+        print(i)
+    # # Example of search
+    # start_timer = time.perf_counter()
+    # node, nb_explored, remaining_nodes = breadth_first_tree_search(problem)
+    # end_timer = time.perf_counter()
+    #
+    # # Example of print
+    # path = node.path()
+    #
+    # for n in path:
+    #     # assuming that the __str__ function of state outputs the correct format
+    #     print(n.state)
+    #
+    # print("* Execution time:\t", str(end_timer - start_timer))
+    # print("* Path cost to goal:\t", node.depth, "moves")
+    # print("* #Nodes explored:\t", nb_explored)
+    # print("* Queue size at goal:\t",  remaining_nodes)
