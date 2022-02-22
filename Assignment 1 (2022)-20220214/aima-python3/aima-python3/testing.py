@@ -72,6 +72,9 @@ if __name__ == "__main__":
     print(init_state.grid)
     for i in range(1,5):
         print(i)
+    tuple = (1,2,3)
+    list = [1,2,3]
+    if
     # # Example of search
     # start_timer = time.perf_counter()
     # node, nb_explored, remaining_nodes = breadth_first_tree_search(problem)

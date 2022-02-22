@@ -25,8 +25,11 @@ class Rubik2D(Problem):
 
     def move_column(self, grid,i,n_move):
         pass
-    def move_row(self, grid, i, n_move):
-        pass
+    def move_row(self, grid, i, n_move): #return tuple
+        line = grid[i]
+        n_cols = len(grid)
+        newline = line[slice(n_cols - n_move)] + line[slice(0, n_cols - n_move)]
+        return newline
 
     def actions(self, state):
         """return a set of actions"""
@@ -54,10 +57,10 @@ class Rubik2D(Problem):
 
         for i in range(n_cols):
             # print("hey")
-            line = self.get_column(state.grid,i) #get the column
+            line = self.get_column(state.grid,i) #get the column in list form
             if not self.is_identical_line(line):
                 for n_move in range(1,n_rows):
-                    newline = line[slice(n_cols - n_move)] + line[slice(0,n_cols-n_move)]
+                    newline = line[slice(n_rows - n_move)] + line[slice(0,n_rows-n_move)]
                     if (newline != line):  # if not identical add list to move
                         action_list.append((1,i, n_move))
 
@@ -67,10 +70,30 @@ class Rubik2D(Problem):
         """return the new grid"""
         #action is (0 or 1, n_move)
         (axe,axe_number,n_move) = action
-        print(axe,axe_number, n_move)
-        # if axe == 0:#move row
+        # print(axe,axe_number, n_move)
+        list_grid = list(state.grid)
+        if axe == 0:#move row
+            list_grid[axe_number] = self.move_row(state.grid,axe_number,n_move)
+            return tuple(list_grid)
+        else:#move column
+            #this requires a large amount of transforming
+            #we will transform everything into a list of list
+            for tuple in range(len(list_grid)):
+                list_grid[tuple]= list(list_grid[tuple])
 
-        pass
+            #we can now manipulate a column
+            column =self.get_column(list_grid,axe_number)
+            n_rows = len(state.grid)
+            newcolumn = column[slice(n_rows - n_move)] + column[slice(0, n_rows - n_move)]
+            for line in range(n_rows):
+                list_grid[line][axe_number] = newcolumn[line]
+
+            #transform everything back to normal
+            for element in range(n_rows):
+                list_grid[]
+
+
+
 
     def goal_test(self, state):
         for i in range(len(state.grid)):
