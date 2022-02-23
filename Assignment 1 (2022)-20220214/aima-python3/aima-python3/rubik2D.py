@@ -36,29 +36,35 @@ class Rubik2D(Problem):
             new_grid[i][axe_number] = new_column[i]
         return new_grid
 
+
+
     def actions(self, state):
         """return a set of actions"""
         #horizontal lines
         n_column = len(state.grid[0])
         n_lines = len(state.grid)
         actions_list = []
-
-
+        list_grid = []
 
         for i in range(n_lines):
-            for j in range(1, n_column):
-                actions_list.append((0, i, j))
+            list_grid.append(list(state.grid[i]))
+
+
+        for axe_number in range(n_lines):
+            for n_move in range(1, n_column):
+                if(self.move_row(list_grid,axe_number, n_move) != list_grid[axe_number]):
+                    actions_list.append((0, axe_number, n_move))
 
         #vertical
-        for i in range(n_column):
-            for j in range(1, n_lines):
-                actions_list.append((1, i, j))
+        for axe_number in range(n_column):
+            for n_move in range(1, n_lines):
+                if(self.move_column(list_grid, axe_number, n_move) != self.get_column(list_grid,axe_number)):
+                    actions_list.append((1, axe_number, n_move))
 
 
         return actions_list
 
     def result(self, state, action):
-
 
         list_grid = list(state.grid) #list of tuples
         n_rows = len(list_grid)
@@ -69,17 +75,16 @@ class Rubik2D(Problem):
             list_grid[axe_number] = new_line
             return State(state.shape, tuple(list_grid), state.answer, "fuckyou")
         else:
-            list_list_grid = []
             for i in range(n_rows):
-                list_list_grid.append(list(list_grid[i]))
-            # print(list_list_grid)
+                list_grid[i] = list(list_grid[i])
 
-            new_column = self.move_column(list_list_grid, axe_number, n_move)
-            new_list_list_grid = self.put_column(list_list_grid, axe_number,new_column)
+            new_column = self.move_column(list_grid, axe_number, n_move)
+            list_grid = self.put_column(list_grid, axe_number, new_column)
 
-            for i in range(len(new_list_list_grid)):
-                new_list_list_grid[i] = tuple(new_list_list_grid[i])
-            return State(state.shape, tuple(new_list_list_grid), state.answer,"fuckyou")
+            for i in range(len(list_grid)):
+                list_grid[i] = tuple(list_grid[i])
+
+            return State(state.shape, tuple(list_grid), state.answer,"fuckyou")
 
     def goal_test(self, state):
         return state.grid == state.answer
