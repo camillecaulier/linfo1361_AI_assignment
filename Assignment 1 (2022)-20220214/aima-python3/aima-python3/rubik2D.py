@@ -23,13 +23,17 @@ class Rubik2D(Problem):
         column = [item[i] for item in grid] #this doesn't work if it's a tuple
         return column
 
-    def move_column(self, grid,i,n_move):
-        pass
+
     def move_row(self, grid, i, n_move): #return tuple
         line = grid[i]
         n_cols = len(grid)
-        newline = line[slice(n_cols - n_move)] + line[slice(0, n_cols - n_move)]
+        newline = line[slice(n_cols - n_move,n_cols)] + line[slice(0, n_cols - n_move)]
         return newline
+    def move_column(self,list_grid,axe_number,n_move):
+        column = self.get_column(list_grid, axe_number)
+        n_rows = len(list_grid)
+        newcolumn = column[slice(n_rows - n_move, n_rows)] + column[slice(0, n_rows - n_move)]
+        return newcolumn
 
     def actions(self, state):
         """return a set of actions"""
@@ -40,13 +44,13 @@ class Rubik2D(Problem):
         n_cols = len(state.grid[0])
         n_rows = len(state.grid)
         action_list = []
+
         #the actions list will have a list of tuples of movements the first number will be the direction
         #0 means horizontal
         #1 means vertical
         #the second number will be by how much we move in a certain direction
         for line_number in range(len(state.grid)):
             line = state.grid[line_number]
-            # print("hi")
             if not self.is_identical_line(line): #if line is not identical we do nothing
                 for n_move in range(1,n_cols): #number of movements start from 1 to n_cols
                     newline = line[slice(n_cols - n_move)] + line[slice(0,n_cols-n_move)]
@@ -55,14 +59,13 @@ class Rubik2D(Problem):
 
         #we will now work with vertical movements which is tricky
 
-        for i in range(n_cols):
-            # print("hey")
-            line = self.get_column(state.grid,i) #get the column in list form
-            if not self.is_identical_line(line):
+        for column_number in range(n_cols):
+            column = self.get_column(state.grid,column_number) #get the column in list form
+            if not self.is_identical_line(column):
                 for n_move in range(1,n_rows):
-                    newline = line[slice(n_rows - n_move)] + line[slice(0,n_rows-n_move)]
-                    if (newline != line):  # if not identical add list to move
-                        action_list.append((1,i, n_move))
+                    newcolumn = column[slice(n_rows - n_move, n_rows)] + column[slice(0,n_rows-n_move)]
+                    if (newcolumn != column):  # if not identical add list to move
+                        action_list.append((1,column_number, n_move))
 
         return action_list
 
@@ -72,34 +75,41 @@ class Rubik2D(Problem):
         (axe,axe_number,n_move) = action
         # print(axe,axe_number, n_move)
         list_grid = list(state.grid)
+        n_rows = len(list_grid)
+
         if axe == 0:#move row
             list_grid[axe_number] = self.move_row(state.grid,axe_number,n_move)
-            return tuple(list_grid)
+            print(list_grid)
+            state.grid = tuple(list_grid)
+            return state
+
         else:#move column
             #this requires a large amount of transforming
             #we will transform everything into a list of list
-            for tuple in range(len(list_grid)):
-                list_grid[tuple]= list(list_grid[tuple])
+            for tuple_index in range(len(list_grid)):
+                list_grid[tuple_index]= list(list_grid[tuple_index])
 
             #we can now manipulate a column
-            column =self.get_column(list_grid,axe_number)
-            n_rows = len(state.grid)
-            newcolumn = column[slice(n_rows - n_move)] + column[slice(0, n_rows - n_move)]
+            newcolumn = self.move_column(list_grid,axe_number,n_move)
+
+            #insert
             for line in range(n_rows):
                 list_grid[line][axe_number] = newcolumn[line]
 
             #transform everything back to normal
             for element in range(n_rows):
-                list_grid[]
+                list_grid[element] = tuple(list_grid[element])
 
-
+            state.grid = tuple(list_grid)
+            return state
 
 
     def goal_test(self, state):
-        for i in range(len(state.grid)):
-            if state.grid[i] != state.answer[i]:
-                return False
-        return True
+        # for i in range(len(state.grid)):
+        #     if state.grid[i] != state.answer[i]:
+        #         return False
+        # return True
+        return state.grid == state.answer
 
 
 ###############
