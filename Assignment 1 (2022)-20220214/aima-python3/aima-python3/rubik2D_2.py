@@ -12,9 +12,9 @@ from search import *
 #################
 class Rubik2D(Problem):
 
-    # def __init__(self,state):
-    #     super().__init__(state, goal=state.answer)
-    #     self.hashmap = {}
+    def __init__(self,state):
+        super().__init__(state, goal=state.answer)
+        self.hashmap = {}
 
 
     def is_identical_line(self,line):
@@ -42,22 +42,42 @@ class Rubik2D(Problem):
 
     def actions(self, state):
         """return a set of actions"""
-        #horizontal lines
-        n_column = len(state.grid[0])
-        n_lines = len(state.grid)
-        actions_list = []
-        for i in range(n_column):
-            for j in range(1, n_lines):
-                if not self.is_identical_line():
-                    actions_list.append((0, i, j))
+        #look at all the horizontal line changes
+        #LINES
+        #check if line is identical
+        # print("orignal:" )
+        # print(state.grid)
+        n_cols = len(state.grid[0])
+        n_rows = len(state.grid)
+        action_list = []
 
-        #vertical
-        for i in range(n_lines):
-            for j in range(1, n_column):
-                if not self.is_identical_line():
-                    actions_list.append((1, i, j))
+        #the actions list will have a list of tuples of movements the first number will be the direction
+        #0 means horizontal
+        #1 means vertical
+        #the second number will be by how much we move in a certain direction
+        for line_number in range(len(state.grid)):
+            line = state.grid[line_number]
+            if not self.is_identical_line(line): #if line is not identical we do nothing
+                for n_move in range(1,n_cols): #number of movements start from 1 to n_cols
+                    newline = line[slice(n_cols - n_move,n_cols)] + line[slice(0,n_cols-n_move)]
+                    if(newline != line): #if not identical add list to move
+                        #create matrix to see if it has already been seen before
+                        # if state.grid in self.hashmap: # if self.hashmap[state.grid]
+                        #     self.hashmap[state.grid] = True
+                        #     print(self.hashmap)
+                        action_list.append((0,line_number,n_move))
 
+        #we will now work with vertical movements which is tricky
 
+        for column_number in range(n_cols):
+            column = self.get_column(state.grid,column_number) #get the column in list form
+            if not self.is_identical_line(column):
+                for n_move in range(1,n_rows):
+                    newcolumn = column[slice(n_rows - n_move, n_rows)] + column[slice(0,n_rows-n_move)]
+                    if (newcolumn != column):  # if not identical add list to move
+                        action_list.append((1,column_number, n_move))
+
+        # print(action_list)
         return action_list
 
     def result(self, state, action):
@@ -150,8 +170,9 @@ if __name__ == "__main__":
     filepath = sys.argv[1]
 
     shape, initial_grid, goal_grid = read_instance_file(filepath)
-
+    print(initial_grid)
     init_state = State(shape, tuple(initial_grid), tuple(goal_grid), "Init")
+
     problem = Rubik2D(init_state)
 
     # Example of search
