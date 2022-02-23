@@ -93,7 +93,7 @@ class Rubik2D(Problem):
             # print(list_grid)
             state.grid = tuple(list_grid)
             # return state
-            return State(state.shape, state.answer, state.grid, "not init")
+            return State(state.shape, state.answer, state.grid, state.move)
 
         else:#move column
             #this requires a large amount of transforming
@@ -115,7 +115,7 @@ class Rubik2D(Problem):
             # print(list_grid)
             state.grid = tuple(list_grid)
             # print(state.grid)
-            return State(state.shape, state.answer, state.grid, "not init")
+            return State(state.shape, state.answer, state.grid, state.move)
 
 
 

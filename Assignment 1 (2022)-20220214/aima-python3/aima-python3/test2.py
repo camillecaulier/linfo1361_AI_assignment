@@ -115,31 +115,31 @@ def read_instance_file(filepath):
     return (shape_x, shape_y), initial_grid, goal_grid
 
 
-def breadth_first_tree_search(problem):
-
-    table = {problem.initial: problem}
-    q = deque()
-    q.appendleft(problem)
-    count = 1
-
-    while len(q) != 0:
-        curr = q.pop()
-
-        action = curr.action #action = liste d'action
-
-        for act in action:
-            newCurr = curr.result(curr.state, act)
-
-            if problem.goal_test(newCurr):
-                return newCurr,count, len(q)
-
-            if newCurr.grid in table:
-                pass
-            else :
-                newRub = Rubik2D(newCurr)
-                table[newCurr.grid] = newRub
-                q.appendleft(newRub)
-                count += 1
+# def breadth_first_tree_search(problem):
+#
+#     table = {problem.initial: problem}
+#     q = deque()
+#     q.appendleft(problem)
+#     count = 1
+#
+#     while len(q) != 0:
+#         curr = q.pop()
+#
+#         action = curr.action #action = liste d'action
+#
+#         for act in action:
+#             newCurr = curr.result(curr.state, act)
+#
+#             if problem.goal_test(newCurr):
+#                 return newCurr,count, len(q)
+#
+#             if newCurr.grid in table:
+#                 pass
+#             else :
+#                 newRub = Rubik2D(newCurr)
+#                 table[newCurr.grid] = newRub
+#                 q.appendleft(newRub)
+#                 count += 1
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
