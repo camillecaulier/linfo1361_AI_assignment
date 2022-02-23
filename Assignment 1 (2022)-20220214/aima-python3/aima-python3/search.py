@@ -261,8 +261,8 @@ def breadth_first_graph_search(problem):
         explored_nodes += 1
         explored[node.state] = True
         for child in node.expand(problem):
-            # if hash(child.state) in explored.keys():
-                # print("visited alredy")
+            if hash(child.state) in explored.keys():
+                print("visited alredy")
             if child.state not in explored:
                 if problem.goal_test(child.state):
                     return child, explored_nodes, len(frontier)

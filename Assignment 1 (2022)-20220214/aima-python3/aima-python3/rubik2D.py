@@ -11,6 +11,9 @@ from search import *
 # Problem class #
 #################
 class Rubik2D(Problem):
+    def __init__(self,state):
+        super().__init__(state)
+        self.hashmap = {}
 
     def move_row(self, list_grid, axe_number, n_move):
         line = list_grid[axe_number]
@@ -107,6 +110,11 @@ class State:
             s += "".join(line) + "\n"
         return s
 
+    def __eq__(self, other):
+        return isinstance(other,State) and self.grid == other.grid
+
+    def __hash__(self) -> int:
+        return hash(self.grid)
 
 def read_instance_file(filepath):
     with open(filepath) as fd:
@@ -136,7 +144,7 @@ if __name__ == "__main__":
 
     # Example of search
     start_timer = time.perf_counter()
-    node, nb_explored, remaining_nodes = breadth_first_tree_search(problem)
+    node, nb_explored, remaining_nodes = breadth_first_graph_search(problem)
     end_timer = time.perf_counter()
 
     # Example of print
