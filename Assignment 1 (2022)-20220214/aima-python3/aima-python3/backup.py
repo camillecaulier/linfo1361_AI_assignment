@@ -76,7 +76,7 @@ class Rubik2D(Problem):
         if(axe == 0):#horizontal
             new_line = self.move_row(list_grid, axe_number, n_move)
             list_grid[axe_number] = new_line
-            return State(state.shape, tuple(list_grid), state.answer, "fuckyou")
+            return State(state.shape, tuple(list_grid), state.answer, action)
         else:
             for i in range(n_rows):
                 list_grid[i] = list(list_grid[i])
@@ -87,7 +87,7 @@ class Rubik2D(Problem):
             for i in range(len(list_grid)):
                 list_grid[i] = tuple(list_grid[i])
 
-            return State(state.shape, tuple(list_grid), state.answer,"fuckyou")
+            return State(state.shape, tuple(list_grid), state.answer,action)
 
     def goal_test(self, state):
         return state.grid == state.answer
@@ -105,7 +105,7 @@ class State:
         self.move = move
 
     def __str__(self):
-        s = self.move + "\n"
+        s = str(self.move) + "\n"
         for line in self.grid:
             s += "".join(line) + "\n"
         return s

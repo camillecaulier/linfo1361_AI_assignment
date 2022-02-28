@@ -33,6 +33,8 @@ class Rubik2D(Problem):
 
     def put_column(self,list_list_grid, axe_number, new_column):
         new_grid = list_list_grid
+        # print(list_list_grid)
+        # print(new_column)
         for i in range(len(list_list_grid)):
             new_grid[i][axe_number] = new_column[i]
         return new_grid
@@ -41,7 +43,7 @@ class Rubik2D(Problem):
 
     def actions(self, state):
         """return a set of actions"""
-
+        #horizontal lines
         n_column = len(state.grid[0])
         n_lines = len(state.grid)
         actions_list = []
@@ -50,23 +52,29 @@ class Rubik2D(Problem):
         for i in range(n_lines):
             list_grid.append(list(state.grid[i]))
 
-        #action = (axe, axe_number, n_move)
-        #if axe = 0 this means the axe will be horizontal
-        #if axe =1 this means the axe will be vertical
+
         for axe_number in range(n_lines):
             for n_move in range(1, n_column):
-                #check if the permutation is not the same as our original line
                 if(self.move_row(list_grid,axe_number, n_move) != list_grid[axe_number]):
-                    actions_list.append((0, axe_number, n_move))
+                    new_line = self.move_row(list_grid, axe_number, n_move)
+                    list_grid[axe_number] = new_line
+                    string_grid = str(list_grid)
+                    if string_grid not in self.hashset:
+                        actions_list.append((0, axe_number, n_move))
+                        self.hashset.add(string_grid)
 
         #vertical
         for axe_number in range(n_column):
             for n_move in range(1, n_lines):
-                # check if the permutation is not the same as our original column
                 if(self.move_column(list_grid, axe_number, n_move) != self.get_column(list_grid,axe_number)):
-                    actions_list.append((1, axe_number, n_move))
+                    new_column = self.move_column(list_grid, axe_number, n_move)
+                    list_grid = self.put_column(list_grid, axe_number, new_column)
+                    string_grid = str(list_grid)
+                    if string_grid not in self.hashset:
+                        actions_list.append((1, axe_number, n_move))
+                        self.hashset.add(string_grid)
 
-
+        # print(actions_list)
         return actions_list
 
     def result(self, state, action):
@@ -76,17 +84,13 @@ class Rubik2D(Problem):
 
         axe, axe_number, n_move = action
         if(axe == 0):#horizontal
-
-            # make transformation
             new_line = self.move_row(list_grid, axe_number, n_move)
             list_grid[axe_number] = new_line
             return State(state.shape, tuple(list_grid), state.answer, action)
-
-        else:#vertical
+        else:
             for i in range(n_rows):
                 list_grid[i] = list(list_grid[i])
 
-            #make transformation
             new_column = self.move_column(list_grid, axe_number, n_move)
             list_grid = self.put_column(list_grid, axe_number, new_column)
 
@@ -150,7 +154,7 @@ if __name__ == "__main__":
 
     # Example of search
     start_timer = time.perf_counter()
-    node, nb_explored, remaining_nodes = depth_first_graph_search(problem)
+    node, nb_explored, remaining_nodes = breadth_first_graph_search(problem)
     end_timer = time.perf_counter()
 
     # Example of print
