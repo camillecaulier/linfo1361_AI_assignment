@@ -7,22 +7,41 @@ import sys
 #################
 class PageCollect(Problem):
 
-    # def __init__(self, initial):
-    #     pass
+    def __init__(self, initial):
+        # super().__init__(initial.state)
+        super().__init__(initial)
+        position = [-1,-1] #to keep track of positions -1 -1 to show that we're at initial condition
+        #it is worth finding the position of p once because index() is a linear function and can bottleneck
+        #position[0] = row , position[1] = column
+
+        # pass
 
     def actions(self, state):
-        """we can only move one square at a time"""
+        """we can only move one square at a time north east south west"""
+        possible_locations = [[0, 1], [0, -1], [1, 0], [-1, 0]] #right left down up
+
+        row = problem.position[0] #y
+        column = problem.position[1] #x
+
+        action_list = []
+        for [i,j] in possible_locations:
+            new_row = row +i
+            new_column = column + j
+            if(state.grid[new_row][new_column] != '#' and new_row < len(state.grid) and new_column< len(state.grid[0])):
+                action_list.append([new_row])
         pass
     
     def result(self, state, action):
+
         pass
 
     def goal_test(self, state):
         pass
     
     def h(self, node):
-        """down left is  """
+        """down left is  0.0"""
         h = 0.0
+        possible_locations= [[0,1],[0,-1],[1,0],[-1,0]]
         # ...
         # compute an heuristic value
         # ...
@@ -67,6 +86,11 @@ class State:
 
 
 
+def find_position(grid):
+    for i in range(len(grid)):
+        for j in range(len(grid[0])):
+            if(grid[i][j] == '@'):
+                return [i,j]
 
 
 #####################
@@ -81,8 +105,14 @@ if __name__ == "__main__":
     print(problem.initial.grid)
     print(problem.goal)
 
+
+    problem.position = find_position(problem.initial.grid)
+    print(problem.position)
+
+
     start_timer = time.perf_counter()
-    node = astar_search(problem)
+    # node = astar_search(problem)
+    node = best_first_graph_search(problem)
     end_timer = time.perf_counter()
     # example of print
     path = node.path()
