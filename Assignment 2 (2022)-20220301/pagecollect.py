@@ -10,12 +10,12 @@ class PageCollect(Problem):
     def __init__(self, initial):
         # super().__init__(initial.state)
         super().__init__(initial)
-        position = [-1,-1] #to keep track of positions -1 -1 to show that we're at initial condition
-        #it is worth finding the position of p once because index() is a linear function and can bottleneck
-        #position[0] = row , position[1] = column
 
-        no_paper_left = 1 #we have not achieved the final goal untill
 
+        no_paper_left = -1 #we have not achieved the final goal untill
+        paper_coords= []
+        door_position = []
+        person_initial= []
         # pass
 
     def actions(self, state):
@@ -45,13 +45,20 @@ class PageCollect(Problem):
         #erase the person
         new_grid[last_position[0]][last_position[1]] = ' '
         #move the person
-        if(new_grid[new_row][new_column] ==)
-        pass
+
+        #check if that point is a page or the door (provided that there aren't any pages left)
+        if(new_grid[new_row][new_column] == 'p') or (new_grid[new_row][new_column] =='X' and problem.no_paper_left == 0):
+            state.goal = True
+            problem.no_paper_left -= 1
+            #write that we have reached a temporary goal
+        new_grid[new_row][new_column] = '@'
+
+        return State(new_grid)
 
     def goal_test(self, state):
         #goal if one of the paper has been removed
         #when all paper are gone we have a goal when we are in the class room
-        pass
+        return
     
     def h(self, node):
         """down left is  0.0"""
@@ -107,7 +114,24 @@ def find_position(grid):
             if(grid[i][j] == '@'):
                 return [i,j]
 
+def find_details(grid):
+    """scan the area for the amount of paper and the quantity and where the person is
+    returns number of paper, their coords, coord of initial position and coord of the door"""
+    no_paper = 0
+    paper_coords= []
+    person_position = []
+    door_position = []
+    for i in range(len(grid)):
+        for j in range(len(grid[0])):
+            if(grid[i][j] == 'p'):
+                no_paper += 1
+                paper_coords.append([i,j])
+            if(grid[i][j] == '@'):
+                person_position= [i,j]
+            if(grid[i][j] == 'X'):
+                door_position = [i,j]
 
+    return no_paper,paper_coords,person_position,door_position
 #####################
 # Launch the search #
 #####################
@@ -118,11 +142,13 @@ if __name__ == "__main__":
 
     problem = PageCollect.load(sys.argv[1])
     print(problem.initial.grid)
-    print(problem.goal)
+    # print(problem.goal)
 
-
-    problem.position = find_position(problem.initial.grid)
-    print(problem.position)
+    problem.no_paper, problem.paper_coords, problem.person_initial, problem.door_position = find_details(problem.initial.grid)
+    print(problem.no_paper)
+    print(problem.paper_coords)
+    print(problem.person_initial)
+    print(problem.door_position)
 
 
     start_timer = time.perf_counter()
