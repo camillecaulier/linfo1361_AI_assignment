@@ -11,18 +11,18 @@ class PageCollect(Problem):
     def __init__(self, initial):
         # super().__init__(initial.state)
         super().__init__(initial)
-    def transform_list_to_tuple(self, grid):
-        list_grid = []
-        for i in range(len(grid)):
-            list_grid.append(tuple(grid[i]))
-        return tuple(list_grid)
+
+        self.no_paper_left = -1  # we have not achieved the final goal untill
+        self.paper_coords = []
+        self.door_position = []
+        self.person_initial = []
+        # pass
 
     def actions(self, state):
         """we can only move one square at a time north east south west"""
-        print("action")
         possible_locations = [[0, 1], [0, -1], [1, 0], [-1, 0]]  # right left down up
 
-        position = state.person_position
+        position = find_position(state.grid)  # this very costly since it is O(nxm)
 
         row = position[0]  # y
         column = position[1]  # x
@@ -36,53 +36,37 @@ class PageCollect(Problem):
                     state.grid[0])):
                 action_list.append(
                     [new_row, new_column, position])  # we store the old position to avoid redoing a search
-        print(action_list)
+
         return action_list
 
     def result(self, state, action):
-        print("result")
-        print(state.closest_objective)
-        print(state.grid)
-        print(state.person_position)
-        print(action)
-        new_grid = [x[:] for x in state.grid] #state.grid.deepcopy() this is because we can't use the copy import
+        new_grid = state.grid
         new_row, new_column, last_position = action
 
         # move the person
         # erase the person
         new_grid[last_position[0]][last_position[1]] = ' '
-
         # move the person
+
         # check if that point is a page or the door (provided that there aren't any pages left)
-
-        if new_grid[new_row][new_column] == 'p':
-            state.no_paper -= 1
-            #remove paper coord from coords
-            #find new closest objective
-
-        elif new_grid[new_row][new_column] == 'X' and state.no_paper == 0:
+        if (new_grid[new_row][new_column] == 'p') or (
+                new_grid[new_row][new_column] == 'X' and problem.no_paper_left == 0):
             state.goal = True
-
+            problem.no_paper_left -= 1
+            # write that we have reached a temporary goal
         new_grid[new_row][new_column] = '@'
-        print(new_grid)
-        print([new_row, new_column])
 
-        return State(new_grid, problem.transform_list_to_tuple(new_grid), state.goal, state.no_paper, state.paper_coords, state.door_position,
-                     [new_row, new_column],random.randint(1,10000000000))
+        return State(new_grid)
 
     def goal_test(self, state):
         # goal if one of the paper has been removed
         # when all paper are gone we have a goal when we are in the class room
-        if state.goal== True:
-            print("we have found the path")
-        # print(state.goal)
-        # print(state.no_paper)
-        return state.goal
+        return
 
     def h(self, node):
         """down left is  0.0"""
         h = 0.0
-
+        possible_locations = [[0, 1], [0, -1], [1, 0], [-1, 0]]
         # ...
         # compute an heuristic value
         # ...
@@ -100,33 +84,19 @@ class PageCollect(Problem):
 # State class #
 ###############
 class State:
-    def __init__(self, grid, grid_tuple =None,  goal=False, no_paper=None, paper_coords=None, door_position=None,
-                 person_position=None, closest_objective=None):
+    def __init__(self, grid):
         self.nbr = len(grid)
         self.nbc = len(grid[0])
         self.grid = grid
-        self.grid_tuple = grid_tuple
-        ##added this
-        self.no_paper = no_paper  # we have not achieved the final goal untill
-        self.paper_coords = paper_coords
-        self.door_position = door_position
-        self.person_position = person_position
-        self.goal = goal
-        self.closest_objective = closest_objective
 
-    # def __str__(self):
-    #     '\n'.join(''.join(row) for row in self.grid)
     def __str__(self):
-        s= "\n"
-        for line in self.grid:
-            s += "".join(line) + "\n"
-        return s
+        '\n'.join(''.join(row) for row in self.grid)
 
-    def __eq__(self, other_state):
-        return isinstance(other_state, State) and self.grid_tuple == other_state.grid_tuple
-
-    def __hash__(self) -> int:
-        return hash(self.grid_tuple)
+    # def __eq__(self, other_state):
+    #     pass
+    #
+    # def __hash__(self):
+    #     pass
 
     def __lt__(self, other):
         return hash(self) < hash(other)
@@ -173,34 +143,21 @@ if __name__ == "__main__":
         print(f"Usage: ./pagecollect.py <path_to_instance_file>")
 
     problem = PageCollect.load(sys.argv[1])
-    # print(problem.initial.grid)
+    print(problem.initial.grid)
     # print(problem.goal)
 
-    problem.initial.no_paper, problem.initial.paper_coords, problem.initial.person_position, problem.initial.door_position = find_details(
+    problem.no_paper, problem.paper_coords, problem.person_initial, problem.door_position = find_details(
         problem.initial.grid)
-
-
-    problem.initial.grid_tuple  = problem.transform_list_to_tuple(problem.initial.grid)  # this way we can hash the grid
-
-    # print("grid ")
-    # print(problem.initial.grid)
-    # print("grid_list")
-    # print(problem.initial.grid_list)
-    # print("number of paper left")
-    # print(problem.initial.no_paper)
-    # print("paper coords")
-    # print(problem.initial.paper_coords)
-    # print("position of person")
-    # print(problem.initial.person_position)
-    # print("position of door")
-    # print(problem.initial.door_position)
+    print(problem.no_paper)
+    print(problem.paper_coords)
+    print(problem.person_initial)
+    print(problem.door_position)
 
     start_timer = time.perf_counter()
     # node = astar_search(problem)
-    node,explored, frontier = breadth_first_graph_search(problem)
+    node = best_first_graph_search(problem)
     end_timer = time.perf_counter()
     # example of print
-    # print(node.state)
     path = node.path()
 
     print('Number of moves: ' + str(node.depth))
@@ -209,7 +166,5 @@ if __name__ == "__main__":
 
     print("* Execution time:\t", str(end_timer - start_timer))
     print("* Path cost to goal:\t", node.depth, "moves")
-    print("nodes", explored)
-    print("frontier", frontier)
     # print("* #Nodes explored:\t", nb_explored)
     # print("* Queue size at goal:\t", remaining_nodes)

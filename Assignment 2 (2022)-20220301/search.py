@@ -246,15 +246,17 @@ def breadth_first_graph_search(problem):
         return node
     frontier = deque([node])
     explored = set()
+    explored_nodes = 0
     while frontier:
         node = frontier.popleft()
         explored.add(node.state)
+        explored_nodes += 1
         for child in node.expand(problem):
             if child.state not in explored and child not in frontier:
                 if problem.goal_test(child.state):
-                    return child
+                    return child,explored_nodes,len(frontier)
                 frontier.append(child)
-    return None
+    return None,explored_nodes,len(frontier)
 
 
 def best_first_graph_search(problem, f, display=False):

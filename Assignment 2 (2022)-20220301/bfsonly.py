@@ -45,7 +45,7 @@ class PageCollect(Problem):
         print(state.grid)
         print(state.person_position)
         print(action)
-        new_grid = [x[:] for x in state.grid] #state.grid.deepcopy() this is because we can't use the copy import
+        new_grid = [x[:] for x in state.grid] #state.grid.deepcopy()ppllll
         new_row, new_column, last_position = action
 
         # move the person
@@ -58,7 +58,6 @@ class PageCollect(Problem):
         if new_grid[new_row][new_column] == 'p':
             state.no_paper -= 1
             #remove paper coord from coords
-            #find new closest objective
 
         elif new_grid[new_row][new_column] == 'X' and state.no_paper == 0:
             state.goal = True
