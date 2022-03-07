@@ -19,7 +19,7 @@ class PageCollect(Problem):
 
     def actions(self, state):
         """we can only move one square at a time north east south west"""
-
+        print("action")
         possible_locations = [[0, 1], [0, -1], [1, 0], [-1, 0]]  # right left down up
 
         position = state.person_position
@@ -36,12 +36,16 @@ class PageCollect(Problem):
                     state.grid[0])):
                 action_list.append(
                     [new_row, new_column, position])  # we store the old position to avoid redoing a search
-
+        print(action_list)
         return action_list
 
     def result(self, state, action):
-
-        new_grid = [x[:] for x in state.grid] #state.grid.deepcopy()ppllll
+        print("result")
+        print(state.closest_objective)
+        print(state.grid)
+        print(state.person_position)
+        print(action)
+        new_grid = [x[:] for x in state.grid] #state.grid.deepcopy() this is because we can't use the copy import
         new_row, new_column, last_position = action
 
         # move the person
@@ -50,28 +54,38 @@ class PageCollect(Problem):
 
         # move the person
         # check if that point is a page or the door (provided that there aren't any pages left)
-        no_paper = state.no_paper
+
         if new_grid[new_row][new_column] == 'p':
-            no_paper -= 1
-
+            state.no_paper -= 1
             #remove paper coord from coords
+            #find new closest objective
 
-        if new_grid[new_row][new_column] == 'X' and state.no_paper == 0:
+        elif new_grid[new_row][new_column] == 'X' and state.no_paper == 0:
             state.goal = True
 
         new_grid[new_row][new_column] = '@'
+        print(new_grid)
+        print([new_row, new_column])
 
-
-        return State(new_grid, problem.transform_list_to_tuple(new_grid), state.goal, no_paper, state.paper_coords, state.door_position,
+        return State(new_grid, problem.transform_list_to_tuple(new_grid), state.goal, state.no_paper, state.paper_coords, state.door_position,
                      [new_row, new_column],random.randint(1,10000000000))
 
     def goal_test(self, state):
-        #if goal is true then we have reached the goal
+        # goal if one of the paper has been removed
+        # when all paper are gone we have a goal when we are in the class room
+        if state.goal== True:
+            print("we have found the path")
+        # print(state.goal)
+        # print(state.no_paper)
         return state.goal
 
     def h(self, node):
         """down left is  0.0"""
         h = 0.0
+
+        # ...
+        # compute an heuristic value
+        # ...
         return h
 
     def load(path):
@@ -92,17 +106,13 @@ class State:
         self.nbc = len(grid[0])
         self.grid = grid
         self.grid_tuple = grid_tuple
-        # these are parameters added to increase the speed
-
-        self.grid_tuple = grid_tuple  # allows us to hash the grids
-        self.no_paper = no_paper  # we have not achieved the final goal untill all the paper is collected
-        self.paper_coords = paper_coords  # so that we can use the heuristic on the coordinates
-        self.door_position = door_position  # so that we can use the heuristic on the coordinates
-        self.person_position = person_position  # positon of the person so that we don't have to search for each
-        # iteration
-        self.goal = goal  # turn true when we have no more paper and we are at the door
-        self.closest_objective = closest_objective  # this allows us to avoid researching the closest objective
-        # self.isAstar = isAstar  # we added this value to allow optimisations in case we use bfs or astar
+        ##added this
+        self.no_paper = no_paper  # we have not achieved the final goal untill
+        self.paper_coords = paper_coords
+        self.door_position = door_position
+        self.person_position = person_position
+        self.goal = goal
+        self.closest_objective = closest_objective
 
     # def __str__(self):
     #     '\n'.join(''.join(row) for row in self.grid)
@@ -172,24 +182,22 @@ if __name__ == "__main__":
 
     problem.initial.grid_tuple  = problem.transform_list_to_tuple(problem.initial.grid)  # this way we can hash the grid
 
-    print("grid ")
-    print(problem.initial.grid)
-    print("grid_list")
-    print(problem.initial.grid_tuple)
-    print("number of paper left")
-    print(problem.initial.no_paper)
-    print("paper coords")
-    print(problem.initial.paper_coords)
-    print("position of person")
-    print(problem.initial.person_position)
-    print("position of door")
-    print(problem.initial.door_position)
+    # print("grid ")
+    # print(problem.initial.grid)
+    # print("grid_list")
+    # print(problem.initial.grid_list)
+    # print("number of paper left")
+    # print(problem.initial.no_paper)
+    # print("paper coords")
+    # print(problem.initial.paper_coords)
+    # print("position of person")
+    # print(problem.initial.person_position)
+    # print("position of door")
+    # print(problem.initial.door_position)
 
     start_timer = time.perf_counter()
     # node = astar_search(problem)
-    node, explored, frontier = astar_search(problem)
-    # node,explored, frontier = breadth_first_graph_search(problem)
-    # node = breadth_first_graph_search(problem)
+    node,explored, frontier = breadth_first_graph_search(problem)
     end_timer = time.perf_counter()
     # example of print
     # print(node.state)
@@ -197,12 +205,11 @@ if __name__ == "__main__":
 
     print('Number of moves: ' + str(node.depth))
     for n in path:
-        # print(n.state.no_paper)  # assuming that the __str__ function of state outputs the correct format
-        # print(n.state.person_position)
-        print(n.state)
+        print(n.state)  # assuming that the __str__ function of state outputs the correct format
 
     print("* Execution time:\t", str(end_timer - start_timer))
     print("* Path cost to goal:\t", node.depth, "moves")
     print("nodes", explored)
     print("frontier", frontier)
-
+    # print("* #Nodes explored:\t", nb_explored)
+    # print("* Queue size at goal:\t", remaining_nodes)

@@ -251,6 +251,7 @@ def breadth_first_graph_search(problem):
         node = frontier.popleft()
         explored.add(node.state)
         explored_nodes += 1
+        # print(node.state.person_position, ",")
         for child in node.expand(problem):
             if child.state not in explored and child not in frontier:
                 if problem.goal_test(child.state):
@@ -272,13 +273,17 @@ def best_first_graph_search(problem, f, display=False):
     frontier = PriorityQueue('min', f)
     frontier.append(node)
     explored = set()
+    explored_nodes =0
     while frontier:
         node = frontier.pop()
         if problem.goal_test(node.state):
             if display:
                 print(len(explored), "paths have been expanded and", len(frontier), "paths remain in the frontier")
-            return node
+            return node,explored_nodes,len(frontier)
+            # return node
         explored.add(node.state)
+        explored_nodes += 1
+        # print(node.state.person_position, ",")
         for child in node.expand(problem):
             if child.state not in explored and child not in frontier:
                 frontier.append(child)
@@ -286,7 +291,7 @@ def best_first_graph_search(problem, f, display=False):
                 if f(child) < frontier[child]:
                     del frontier[child]
                     frontier.append(child)
-    return None
+    return None,explored_nodes,len(frontier)
 
 
 def uniform_cost_search(problem, display=False):
