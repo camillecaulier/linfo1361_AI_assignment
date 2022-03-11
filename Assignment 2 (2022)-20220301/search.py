@@ -283,6 +283,9 @@ def best_first_graph_search(problem, f, display=False):
             # return node
         explored.add(node.state)
         explored_nodes += 1
+        # if explored_nodes%1000 == 0:
+        #     print(explored_nodes)
+        #     print(len(frontier))
         # print(node.state.person_position, ",")
         for child in node.expand(problem):
             if child.state not in explored and child not in frontier:

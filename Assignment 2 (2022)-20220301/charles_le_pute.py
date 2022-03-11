@@ -29,8 +29,7 @@ class PageCollect(Problem):
         if no_paper == 0:  # this means that there are no paper objectves and we can start looking for the last objective
             return state.door_position
         else:
-            closest_objective_distance = (
-                                                     state.nbr * state.nbc) ** 2  # i just took an upper bound that i'm fairly certain that
+            closest_objective_distance = (state.nbr * state.nbc) ** 2  # i just took an upper bound that i'm fairly certain that
             # I wouldn't be able to surpass
             closest_objective = paper_coords[0]
             for coords in range(len(paper_coords)):
@@ -44,7 +43,7 @@ class PageCollect(Problem):
         """we can only move one square at a time north east south west"""
 
         # possible_locations = [[0, 1], [0, -1], [1, 0], [-1, 0]]  # right left down up
-        possible_locations = [[1, 0], [0, -1], [0, 1], [-1, 0]]  # down left right up
+        possible_locations = [[1, 0],[0, -1],[0, 1],[-1, 0]]  # down left right up
         position = state.person_position
 
         row = position[0]  # y
@@ -70,8 +69,8 @@ class PageCollect(Problem):
         # move the person
         # erase the person
 
-        # "condition to make sure we don't erase the X accidentally
-        if (last_position == state.door_position):
+        #"condition to make sure we don't erase the X accidentally
+        if(last_position == state.door_position):
             new_grid[last_position[0]][last_position[1]] = 'X'
         else:
             new_grid[last_position[0]][last_position[1]] = ' '
@@ -95,8 +94,17 @@ class PageCollect(Problem):
         goal = state.goal
         if new_grid[new_row][new_column] == 'X' and state.no_paper == 0:
             goal = True
+            new_grid[new_row][new_column] = '@'
 
+        #condition to make sure we don;t accidentally erase the "X" when there is still paper to take
+        # if new_grid[new_row][new_column] != 'X' and state.no_paper >= 0:
         new_grid[new_row][new_column] = '@'
+
+        # new_grid[new_row][new_column] = '@'
+
+        if(state.isAstar):
+            new_closest_objective = problem.find_new_closest_objective(state, paper_coords, no_paper,
+                                                                   [new_row, new_column])
 
         return State(new_grid, problem.transform_list_to_tuple(new_grid), goal, no_paper, paper_coords,
                      state.door_position,
@@ -109,29 +117,14 @@ class PageCollect(Problem):
     def h(self, node):
         """down left is  (0,0)"""
         if node.state.isAstar:
-            # heuristic is sum(min(distance(&, p_i)) + distance(p_i or @, X)
-            positions = []
-
-            if node.state.no_paper > 0:
-                positions = positions + node.state.paper_coords
-            positions.append(node.state.door_position)
-            positions.append(node.state.person_position)
-
-            smallest_distance = 10000
-            total_distance = 0
-            for item in range(len(positions)): #USE LEN AND WE HAVE INDEXES -> COMPARE INDEXES
-                min_distance = 100000
-                for item2 in range(len(positions)):
-                    if item != item2:
-                        distance_position = distance(positions[item], positions[item2])
-                        if distance_position < min_distance:
-                            min_distance= distance_position
-                            if distance_position < smallest_distance: #to remove the smallest distance so we are admissible
-                                smallest_distance =distance_position
-                total_distance += min_distance
-            total_distance -= smallest_distance
-
-            return total_distance
+            #check sum + the reduced path eg
+            #nopaper * length constant + path length goal
+            # use heuristic
+            # by multiplying by number of paper left we force the algorithm to prioritise those with the least amount of
+            # paper left to take ie we force to finish the almost finished algorithm
+            # return distance(node.state.person_position, node.state.closest_objective) * (node.state.no_paper) #not admissible but will give a very good approximation
+            # return node.state.no_paper
+            return distance(node.state.person_position, node.state.closest_objective)  #will explore less
         else:  # we are using bfs and don't need a heuristic
             return 0.0
 
@@ -239,6 +232,7 @@ if __name__ == "__main__":
 
     problem = PageCollect.load(sys.argv[1])
 
+
     problem.initial.no_paper, problem.initial.paper_coords, problem.initial.person_position, problem.initial.door_position = find_details(
         problem.initial.grid)
 
@@ -247,7 +241,7 @@ if __name__ == "__main__":
     # print_info(problem)
 
     # IF YOU ARE USING BFS PUT FALSE this will allow optimisations for bfs
-    problem.initial.isAstar = False
+    problem.initial.isAstar = True
 
     if (problem.initial.isAstar):
         problem.initial.closest_objective = problem.find_new_closest_objective(problem.initial,
@@ -256,9 +250,9 @@ if __name__ == "__main__":
                                                                                problem.initial.person_position)
 
     start_timer = time.perf_counter()
-    # node, explored, frontier = astar_search(problem)
+    node, explored, frontier = astar_search(problem)
     # node = astar_search(problem)
-    node, explored, frontier = breadth_first_graph_search(problem)
+    # node, explored, frontier = breadth_first_graph_search(problem)
     # node = breadth_first_graph_search(problem)
     end_timer = time.perf_counter()
     # example of print
@@ -266,11 +260,11 @@ if __name__ == "__main__":
     path = node.path()
 
     print('Number of moves: ' + str(node.depth))
-    # for n in path:
-    #     # print(n.state.no_paper)  # assuming that the __str__ function of state outputs the correct format
-    #     # print(n.state.person_position)
-    #     print(n.state)
-    #
+    for n in path:
+        # print(n.state.no_paper)  # assuming that the __str__ function of state outputs the correct format
+        # print(n.state.person_position)
+        print(n.state)
+
     print("* Execution time:\t", str(end_timer - start_timer))
     print("* Path cost to goal:\t", node.depth, "moves")
     print("nodes", explored)

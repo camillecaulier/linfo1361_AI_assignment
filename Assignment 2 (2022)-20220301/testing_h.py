@@ -116,22 +116,27 @@ class PageCollect(Problem):
                 positions = positions + node.state.paper_coords
             positions.append(node.state.door_position)
             positions.append(node.state.person_position)
-
+            min_distances = []
+            for i in range(len(positions)):
+                min_distances.append(10000)
+            index = 0
             smallest_distance = 10000
-            total_distance = 0
+            smallest_index = 0
+            # print(positions)
             for item in range(len(positions)): #USE LEN AND WE HAVE INDEXES -> COMPARE INDEXES
-                min_distance = 100000
                 for item2 in range(len(positions)):
                     if item != item2:
                         distance_position = distance(positions[item], positions[item2])
-                        if distance_position < min_distance:
-                            min_distance= distance_position
+                        if distance_position < min_distances[index]:
+                            min_distances[index] = distance_position
                             if distance_position < smallest_distance: #to remove the smallest distance so we are admissible
-                                smallest_distance =distance_position
-                total_distance += min_distance
-            total_distance -= smallest_distance
-
-            return total_distance
+                                smallest_index = index
+                index += 1
+            min_distances.pop(smallest_index)
+            # print(min_distances)
+            total_sum = sum(min_distances)
+            # print(total_sum)
+            return total_sum
         else:  # we are using bfs and don't need a heuristic
             return 0.0
 
@@ -247,7 +252,7 @@ if __name__ == "__main__":
     # print_info(problem)
 
     # IF YOU ARE USING BFS PUT FALSE this will allow optimisations for bfs
-    problem.initial.isAstar = False
+    problem.initial.isAstar = True
 
     if (problem.initial.isAstar):
         problem.initial.closest_objective = problem.find_new_closest_objective(problem.initial,
@@ -256,9 +261,9 @@ if __name__ == "__main__":
                                                                                problem.initial.person_position)
 
     start_timer = time.perf_counter()
-    # node, explored, frontier = astar_search(problem)
+    node, explored, frontier = astar_search(problem)
     # node = astar_search(problem)
-    node, explored, frontier = breadth_first_graph_search(problem)
+    # node, explored, frontier = breadth_first_graph_search(problem)
     # node = breadth_first_graph_search(problem)
     end_timer = time.perf_counter()
     # example of print
@@ -266,11 +271,11 @@ if __name__ == "__main__":
     path = node.path()
 
     print('Number of moves: ' + str(node.depth))
-    # for n in path:
-    #     # print(n.state.no_paper)  # assuming that the __str__ function of state outputs the correct format
-    #     # print(n.state.person_position)
-    #     print(n.state)
-    #
+    for n in path:
+        # print(n.state.no_paper)  # assuming that the __str__ function of state outputs the correct format
+        # print(n.state.person_position)
+        print(n.state)
+
     print("* Execution time:\t", str(end_timer - start_timer))
     print("* Path cost to goal:\t", node.depth, "moves")
     print("nodes", explored)
