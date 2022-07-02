@@ -1,0 +1,46 @@
+start = time.perf_counter()
+    node, step = randomized_maxvalue(vc_problem, step_limit)
+    # node,step = maxvalue(vc_problem, limit=step_limit)
+    # node = random_walk(vc_problem, step_limit)
+    end = time.perf_counter()
+    time_maxval = end-start
+    steps_maxval = step
+    val_maxval = node.value()
+
+    total_time= 0
+    total_steps= 0
+    total_value = 0
+    for i in range(10):
+
+        start = time.perf_counter()
+        node,step = randomized_maxvalue(vc_problem, step_limit)
+        # node,step = maxvalue(vc_problem, limit=step_limit)
+        # node = random_walk(vc_problem, step_limit)
+        end = time.perf_counter()
+        time_spent = end - start
+        total_time += time_spent
+        total_value += node.value()
+        total_steps += step
+
+    total_time = total_time / 10
+    total_value = int(total_value / 10)
+    total_steps = total_steps/10
+
+    total_time_2 = 0
+    total_steps_2 = 0
+    total_value_2 = 0
+    for i in range(10):
+        start = time.perf_counter()
+        # node, step = randomized_maxvalue(vc_problem, step_limit)
+        # node,step = maxvalue(vc_problem, limit=step_limit)
+        node,step = random_walk(vc_problem, step_limit)
+        end = time.perf_counter()
+        time_spent = end - start
+        total_time_2 += time_spent
+        total_value_2 += node.value()
+        total_steps_2 += step
+
+    total_time_2 = total_time_2 / 10
+    total_value_2 = total_value_2 / 10
+    total_steps_2 = total_steps_2 / 10
+    print(" &  " + str(time_maxval) + " & "+ str(val_maxval) + " & "+ str(steps_maxval) + " & " + str(total_time) + " & " + str(total_value) + " & " + str(total_steps) + "& " + str(total_time_2) + " & " + str(total_value_2) + " & " + str(total_steps_2) +"\\\\")

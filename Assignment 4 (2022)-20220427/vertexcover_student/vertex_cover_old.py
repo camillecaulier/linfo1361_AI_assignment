@@ -2,8 +2,8 @@
 """NAMES OF THE AUTHOR(S): Nicolas Golenvaux <nicolas.golenvaux@uclouvain.be>"""
 from search import *
 import sys
-import time
-import numpy
+from queue import PriorityQueue
+import random as rand
 
 covers = set()  # think of symetric states
 node_to_modify = 0
@@ -15,17 +15,31 @@ class VertexCover(Problem):
 
     # if you want you can implement this method and use it in the maxvalue and randomized_maxvalue functions
     def successor(self, state):
+        queue = PriorityQueue()  # to make is max we will have to inverse the things
+        # change the order of what to take
+        n_vertices = state.n_vertices
+        # node_to_change = rand.randint(0, n_vertices)
+        # while(node_to_change not in state.cover):
+        #     node_to_change = rand.randint(0, state.n_vertices)
+        node_to_change = rand.randint(0, state.k-1)
+        # global node_to_modify
+        # node_to_modify += 1
+        # node_to_change = (node_to_modify)%state.k
+
         states = []
-        for node_to_change in range(len(state.cover)):
-            for new_node in state.not_cover:
-                new_cover = state.cover.copy()
-                if new_node not in state.cover:  # so that we don't retake the same node
-                    new_cover[node_to_change] = new_node
-                    # print(new_cover)
-                    new_cover.sort()
-                    tuple_cover = tuple(new_cover)
-                    states.append((0, State(state.k, state.vertices, state.edges, cover=new_cover)))
-                    covers.add(tuple_cover)
+        for new_node in range(n_vertices):
+            new_cover = state.cover.copy()
+            if new_node not in state.cover:  # so that we don't retake the same node
+                new_cover[node_to_change] = new_node
+                # print(new_cover)
+                new_cover.sort()
+                tuple_cover = tuple(new_cover)
+                states.append((0, State(state.k, state.vertices, state.edges, cover=new_cover)))
+                covers.add(tuple_cover)
+                # if tuple_cover not in covers:
+                #     states.append((0, State(state.k, state.vertices, state.edges, cover=new_cover)))
+                #     covers.add(tuple_cover)
+                # create binary number
         return tuple(states)
 
     # if you want you can implement this method and use it in the maxvalue and randomized_maxvalue functions
@@ -106,18 +120,16 @@ def maxvalue(problem, limit=100, callback=None):
     # best = current
     current = LSNode(problem, problem.initial, 0)
     best = current
-    best_step = 100
     for step in range(limit):
         if callback is not None:
             callback(current)
             #we need to create a list of best nodes
-        neighbours = [(state.value(), state) for state in list(current.expand())]
+        neighbours = [(item.value(), item) for item in list(current.expand())]
         neighbours.sort(key= lambda a: a[0], reverse=True)
         current = neighbours[0][1]
         # current = random.choice(list(current.expand()))
         if current.value() > best.value():
             best = current
-            best_step = step
 
     return best
 
@@ -127,7 +139,6 @@ def randomized_maxvalue(problem, limit=100, callback=None):
 
     current = LSNode(problem, problem.initial, 0)
     best = current
-    best_step = 100
     for step in range(limit):
         if callback is not None:
             callback(current)
@@ -136,13 +147,10 @@ def randomized_maxvalue(problem, limit=100, callback=None):
         neighbours.sort(key=lambda a: a[0], reverse=True)
         # current = neighbours[0][1]
         current = random.choice(neighbours[:5])[1]
-        # print(neighbours)
-        # print(current)
         if current.value() > best.value():
             best = current
-            best_step = step
 
-    return best,best_step
+    return best
 
 
 #####################
@@ -153,56 +161,15 @@ if __name__ == '__main__':
     init_state = State(info[0], info[1], info[2])
     vc_problem = VertexCover(init_state)
 
+    # print(vc_problem.initial)  # print the intial state
+    # print("cover: " + str(vc_problem.initial.cover))
+    # print("vertices: " + str(vc_problem.initial.vertices))
+    # print("edges: " + str(vc_problem.initial.edges))
+    # print("not_covered : " + str(vc_problem.initial.not_cover))
+
     step_limit = vc_problem.initial.n_edges * vc_problem.initial.n_vertices
-    start = time.perf_counter()
-    node, step = randomized_maxvalue(vc_problem, step_limit)
-    # node,step = maxvalue(vc_problem, limit=step_limit)
+    # node = randomized_maxvalue(vc_problem, step_limit)
+    node = maxvalue(vc_problem, limit=step_limit)
     # node = random_walk(vc_problem, step_limit)
-    end = time.perf_counter()
-    time_maxval = end-start
-    steps_maxval = step
-    val_maxval = node.value()
-
-    total_time= 0
-    total_steps= 0
-    total_value = 0
-    for i in range(10):
-
-        start = time.perf_counter()
-        node,step = randomized_maxvalue(vc_problem, step_limit)
-        # node,step = maxvalue(vc_problem, limit=step_limit)
-        # node = random_walk(vc_problem, step_limit)
-        end = time.perf_counter()
-        time_spent = end - start
-        total_time += time_spent
-        total_value += node.value()
-        total_steps += step
-
-    total_time = total_time / 10
-    total_value = int(total_value / 10)
-    total_steps = total_steps/10
-
-    total_time_2 = 0
-    total_steps_2 = 0
-    total_value_2 = 0
-    for i in range(10):
-        start = time.perf_counter()
-        # node, step = randomized_maxvalue(vc_problem, step_limit)
-        # node,step = maxvalue(vc_problem, limit=step_limit)
-        node,step = random_walk(vc_problem, step_limit)
-        end = time.perf_counter()
-        time_spent = end - start
-        total_time_2 += time_spent
-        total_value_2 += node.value()
-        total_steps_2 += step
-
-    total_time_2 = total_time_2 / 10
-    total_value_2 = total_value_2 / 10
-    total_steps_2 = total_steps_2 / 10
-    print(" &  " + str(time_maxval) + " & "+ str(val_maxval) + " & "+ str(steps_maxval) + " & " + str(total_time) + " & " + str(total_value) + " & " + str(total_steps) + "& " + str(total_time_2) + " & " + str(total_value_2) + " & " + str(total_steps_2) +"\\\\")
-
-    # state = node.state
-    # node, step = randomized_maxvalue(vc_problem, step_limit)
-    # node,step = maxvalue(vc_problem, limit=step_limit)
-    # node = random_walk(vc_problem, step_limit)
-    # print(state)
+    state = node.state
+    print(state)
