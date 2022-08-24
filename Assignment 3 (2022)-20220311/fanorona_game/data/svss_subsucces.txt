@@ -1,0 +1,86 @@
+python main.py -ai0 smart_agent.py -ai1 smart_step_agent.py -s 1 -t 1000
+
+Player SMART STEP AGENT 1 is playing.
+time remain is  881.7973931  seconds
+nodes for this search:3
+total nodes:40491
+Elapsed time: 0.0466 seconds
+Action performed successfully by 1  in 0.04658280000001014  rest  881.7508103
+
+Player SMART AGENT -1 is playing.
+time remain is  763.3485905  seconds
+nodes for this search:1
+total nodes:13937
+current eval : 3
+Elapsed time: 0.0046 seconds
+Action performed successfully by -1  in 0.004635000000007494  rest  763.3439555
+
+other way round¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
+
+Player SMART AGENT 1 is playing.
+time remain is  727.9282929000001  seconds
+nodes for this search:8
+total nodes:29570
+current eval : 4
+Elapsed time: 1.0705 seconds
+Action performed successfully by 1  in 1.0705151000000228  rest  726.8577778
+
+Player SMART AGENT 1 is playing.
+time remain is  726.8577778  seconds
+nodes for this search:5
+total nodes:29575
+current eval : 5
+Elapsed time: 0.3776 seconds
+Action performed successfully by 1  in 0.37762159999999767  rest  726.4801562
+
+It's over.
+
+without double way==========================================
+ python main.py -ai0 smart_agent.py -ai1 smart_step_agent.py -s 1 -t 1000
+# if isMax:
+        #     output.sort(key=lambda output: output[2])
+        # else: #this means it is min
+        #     output.sort(key=lambda output: output[2], reverse= True)
+        output.sort(key=lambda output: output[2])
+Player SMART STEP AGENT 1 is playing.
+time remain is  883.6614735  seconds
+nodes for this search:2
+total nodes:40543
+Elapsed time: 0.0134 seconds
+Action performed successfully by 1  in 0.013352499999996326  rest  883.6481210000001
+
+Player SMART AGENT -1 is playing.
+time remain is  756.8846761  seconds
+nodes for this search:1
+total nodes:13847
+current eval : 3
+Elapsed time: 0.0038 seconds
+Action performed successfully by -1  in 0.003817300000036994  rest  756.8808587999999
+
+It's over.
+
+other way
+Player SMART STEP AGENT -1 is playing.
+time remain is  924.6886890999999  seconds
+nodes for this search:11
+total nodes:22254
+Elapsed time: 0.0515 seconds
+Action performed successfully by -1  in 0.05151809999995294  rest  924.637171
+
+Player SMART AGENT 1 is playing.
+time remain is  713.4521728000002  seconds
+nodes for this search:8
+total nodes:30821
+current eval : 4
+Elapsed time: 1.1033 seconds
+Action performed successfully by 1  in 1.1032512999998971  rest  712.3489215000002
+
+Player SMART AGENT 1 is playing.
+time remain is  712.3489215000002  seconds
+nodes for this search:5
+total nodes:30826
+current eval : 5
+Elapsed time: 0.3725 seconds
+Action performed successfully by 1  in 0.3724809999999934  rest  711.9764405000003
+
+

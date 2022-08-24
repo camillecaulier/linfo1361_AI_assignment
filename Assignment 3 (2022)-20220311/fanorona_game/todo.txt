@@ -1,0 +1,6 @@
+1. create the iterative deepening algorithm
+2. transposition table
+3. find a new evaluation function
+
+test the sorting in the sub succesors
+try and remove useless branches according to their values

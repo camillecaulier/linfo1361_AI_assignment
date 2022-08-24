@@ -1,0 +1,33 @@
+Player SMART AGENT -1 is playing.
+time remain is  814.0241505999995  seconds
+nodes for this search:7
+total nodes:49290
+Elapsed time: 0.3734 seconds
+Action performed successfully by -1  in 0.3733533999999281  rest  813.6507971999995
+
+Player SMART STEP AGENT 1 is playing.
+time remain is  692.0514658999998  seconds
+nodes for this search:1
+total nodes:80966
+Elapsed time: 0.0169 seconds
+Action performed successfully by 1  in 0.01690510000003087  rest  692.0345607999998
+OTHER WAY
+
+
+Player SMART STEP AGENT -1 is playing.
+time remain is  809.0611586  seconds
+nodes for this search:7
+total nodes:49290
+Elapsed time: 0.3798 seconds
+Action performed successfully by -1  in 0.37978079999993497  rest  808.6813778000001
+
+Player SMART AGENT 1 is playing.
+time remain is  683.6435285000002  seconds
+nodes for this search:1
+total nodes:80966
+Elapsed time: 0.0111 seconds
+Action performed successfully by 1  in 0.011086100000056831  rest  683.6324424000002
+
+It's over.
+
+Process finished with exit code -1

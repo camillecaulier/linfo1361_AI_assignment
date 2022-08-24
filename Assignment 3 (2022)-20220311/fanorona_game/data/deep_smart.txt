@@ -1,0 +1,17 @@
+Player BASIC AGENT -1 is playing.
+time remain is  194.86315349999995  seconds
+nodes for this search:28
+total nodes:4987
+Elapsed time: 0.2937 seconds
+Action performed successfully by -1  in 0.29367189999999255  rest  194.56948159999996
+
+Player SMART AGENT 1 is playing.
+time remain is  198.03046780000003  seconds
+nodes for this search:1
+total nodes:6009
+Elapsed time: 0.0021 seconds
+Action performed successfully by 1  in 0.002127000000029966  rest  198.0283408
+
+It's over.
+
+Process finished with exit code -1

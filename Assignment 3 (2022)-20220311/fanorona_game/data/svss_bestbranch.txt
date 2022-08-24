@@ -1,0 +1,66 @@
+        if self.color.value == state.get_latest_player():
+            #we check i f this is the same player so we want to max
+            value,_ = self.max_value(state, -inf, inf)
+            return value
+        else:# we want to min since it's not the same player
+            value,_ = self.min_value(state,-inf, inf)
+            return value
+
+ACTIVATED
+python main.py -ai0 smart_agent.py -ai1 smart_step_agent.py -s 1 -t 1000
+
+Player SMART STEP AGENT 1 is playing.
+time remain is  883.6821999  seconds
+nodes for this search:30
+total nodes:40541
+Elapsed time: 0.5228 seconds
+Action performed successfully by 1  in 0.5228112999999439  rest  883.1593886
+
+Player SMART AGENT -1 is playing.
+time remain is  764.7958612999998  seconds
+nodes for this search:48
+total nodes:13603
+current eval : 3
+Elapsed time: 5.0504 seconds
+Action performed successfully by -1  in 5.050356899999997  rest  759.7455043999998
+
+Player SMART STEP AGENT 1 is playing.
+time remain is  883.1593886  seconds
+nodes for this search:2
+total nodes:40543
+Elapsed time: 0.0124 seconds
+Action performed successfully by 1  in 0.01242139999999381  rest  883.1469672000001
+
+Player SMART AGENT -1 is playing.
+time remain is  759.7455043999998  seconds
+nodes for this search:1
+total nodes:13604
+current eval : 3
+Elapsed time: 0.0039 seconds
+Action performed successfully by -1  in 0.003911000000016429  rest  759.7415933999998
+
+OTHER WAY ROUND======================================================================
+
+
+Player SMART STEP AGENT -1 is playing.
+time remain is  927.2753266  seconds
+nodes for this search:11
+total nodes:22254
+Elapsed time: 0.0514 seconds
+Action performed successfully by -1  in 0.05144999999998845  rest  927.2238765999999
+
+Player SMART AGENT 1 is playing.
+time remain is  716.9862914999999  seconds
+nodes for this search:8
+total nodes:30250
+current eval : 4
+Elapsed time: 1.0776 seconds
+Action performed successfully by 1  in 1.077627899999925  rest  715.9086636
+
+Player SMART AGENT 1 is playing.
+time remain is  715.9086636  seconds
+nodes for this search:5
+total nodes:30255
+current eval : 5
+Elapsed time: 0.3651 seconds
+Action performed successfully by 1  in 0.3650856000000431  rest  715.543578

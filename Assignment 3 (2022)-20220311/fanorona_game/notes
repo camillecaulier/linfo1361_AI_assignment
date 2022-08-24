@@ -1,0 +1,16 @@
+-1 is white
+1 is green
+
+si c'est la fin du jeu et faire en sorte qu'à un certain level tu ne regardes que le level suivant (donc pas jusqu'à la fin du jeu comme on le ferait en greedy mais bien juste le meilleur move "1 coup plus loin") pour ça il faut utiliser l'arg depth
+
+
+dans FanoronaRules y'a des fonctions pour get le nombre de jetons d'une couleur (22-ce nbr),
+dans FanoronaState ya un truc avec direct le nbr de jeton de chaque joueur,
+dans FanoronaRules y'a une fonctions pour get le nombre de case vide aussi,
+dans tout ca y'a un truc que j'ai utiliser et d'autre encore qui te permette de trouver ce nombre
+
+"""
+    The evaluate function must return an integer value
+    representing the utility function of the board. this must be done with respect to your player
+    (1 for the green player, −1 for white player)
+    """

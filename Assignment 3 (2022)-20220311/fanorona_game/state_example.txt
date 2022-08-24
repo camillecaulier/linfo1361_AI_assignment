@@ -1,0 +1,11 @@
+{"latest_player": null,
+"latest_move": null,
+"next_player": -1,
+"score": {"-1": 0, "1": 0},
+"on_board": {"-1": 22, "1": 22},
+"captured": null,
+"rewarding_move": false,
+"boring_moves": 0,
+"just_stop": 50,
+"board": [["white", "white", "white", "white", "white", "white", "white", "white", "white"], ["white", "white", "white", "white", "white", "white", "white", "white", "white"], ["white", "green", "white", "green", "empty", "white", "green", "white", "green"], ["green", "green", "green", "green", "green", "green", "green", "green", "green"], ["green", "green", "green", "green", "green", "green", "green", "green", "green"]]}
+from there we have white and green and speicifically empty

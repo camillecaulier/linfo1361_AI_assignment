@@ -1,0 +1,18 @@
+Player SMART AGENT -1 is playing.
+time remain is  185.09717660000007  seconds
+nodes for this search:30
+total nodes:5745
+Elapsed time: 0.3253 seconds
+Action performed successfully by -1  in 0.32529210000001285  rest  184.77188450000006
+
+Player BASIC AGENT 1 is playing.
+time remain is  197.84378330000004  seconds
+nodes for this search:1
+total nodes:4665
+Elapsed time: 0.0015 seconds
+Action performed successfully by 1  in 0.0014536000000475724  rest  197.8423297
+C:/Users/Camil/OneDrive/Documents/masters/LINFO1361_Intelligence_Artificielle/assignments/Assignment 3 (2022)-20220311/fanorona_game/data/test
+
+It's over.
+
+Process finished with exit code -1
